@@ -2,7 +2,7 @@ import server from '../../backend/mock-server';
 import React from 'react';
 import AppFunctional from './AppFunctional';
 import AppClass from './AppClass';
-import { render, fireEvent, screen } from '@testing-library/react';
+import { render, fireEvent, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
 jest.setTimeout(1000) // default 5000 too long for Codegrade
@@ -414,9 +414,13 @@ test('AppClass is a class-based component, Review how to build a class-based com
       })
       
       test(`[F4 ${label}] Actions: down, right, submit Error message on no email is correct`, async () => {
-        fireEvent.click(down);
-        fireEvent.click(right);
-        fireEvent.click(submit);
+        render(<AppFunctional />);
+      
+        await act(async () => {
+          fireEvent.click(screen.getByText('DOWN'));
+          fireEvent.click(screen.getByText('RIGHT'));
+          fireEvent.click(screen.getByText('Submit Email'));
+        });
       
         const errorElement = await screen.findByText((content, element) => {
           return content.startsWith('Ouch: email is required') && within(element).getByLabelText('Email');
@@ -426,18 +430,20 @@ test('AppClass is a class-based component, Review how to build a class-based com
       });
       
       test(`[F5 ${label}] Actions: down, right, type invalid email, submit Error message on invalid email is correct`, async () => {
-        render(<AppFunctional/>)
-        fireEvent.click(down);
-        fireEvent.click(right);
-        fireEvent.change(email, { target: { value: 'bad@email' } });
-        fireEvent.click(submit);
+        render(<AppFunctional />);
       
-        await waitFor(()=>{
-        const errorElement =  screen.queryByText(/Ouch: email must be a valid email/i);
-        expect(errorElement).toBeInTheDocument();
-      })
-    })
+        await act(async () => {
+          fireEvent.click(screen.getByText('DOWN'));
+          fireEvent.click(screen.getByText('RIGHT'));
+          fireEvent.change(screen.getByLabelText('Type email'), { target: { value: 'bad@email' } });
+          fireEvent.click(screen.getByText('Submit Email'));
+        });
       
+        await waitFor(async () => {
+          const errorElement = screen.queryByText(/Ouch: email must be a valid email/i);
+          expect(errorElement).toBeInTheDocument();
+        });
+      });
       
       test(`[F6 ${label}] Actions: down, right, type foo@bar.baz email, submit
         Error message on banned email is correct`, async () => {
