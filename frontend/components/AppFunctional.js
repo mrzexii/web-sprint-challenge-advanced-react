@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-// Suggested initial states
 const initialMessage = '';
 const initialEmail = '';
 const initialSteps = 0;
-const initialIndex = 4; // the index the "B" is at
+const initialIndex = 4;
 
 export default function AppFunctional(props) {
   const [message, setMessage] = useState(initialMessage);
@@ -14,7 +13,6 @@ export default function AppFunctional(props) {
   const [index, setIndex] = useState(initialIndex);
 
   function getXY() {
-    // Calculate X and Y coordinates based on the current index
     const X = index % 3 + 1;
     const Y = Math.floor(index / 3) + 1;
     return { X, Y };
@@ -33,7 +31,6 @@ export default function AppFunctional(props) {
   }
 
   function getNextIndex(direction) {
-    // Calculate the next index based on the given direction
     let nextIndex = index;
 
     switch (direction) {
@@ -68,7 +65,6 @@ export default function AppFunctional(props) {
   }
 
   function onChange(evt) {
-    // Update the email input value
     setEmail(evt.target.value);
   }
 
@@ -108,9 +104,9 @@ export default function AppFunctional(props) {
         ))}
       </div>
       <div className="info">
-      <h3 id="message" role="alert" name="Error Message">
-    {message}
-  </h3>
+        <h3 id="message" role="alert">
+          {message}
+        </h3>
       </div>
       <div id="keypad">
         <button id="left" onClick={() => move('left')}>LEFT</button>
