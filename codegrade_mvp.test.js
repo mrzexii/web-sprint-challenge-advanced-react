@@ -2,7 +2,7 @@ import server from './backend/mock-server'
 import React from 'react'
 import AppFunctional from './frontend/components/AppFunctional'
 import AppClass from './frontend/components/AppClass'
-import { render, fireEvent, screen } from '@testing-library/react'
+import { render, fireEvent, screen, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom/extend-expect'
 
 jest.setTimeout(1000) // default 5000 too long for Codegrade
@@ -158,12 +158,13 @@ test('AppClass is a class-based component, Review how to build a class-based com
       })
       test(`[B2 ${label}] Actions: up
           Coordinates should be (2,1)`, () => {
-        
+        fireEvent.click(up)
         expect(coordinates.textContent).toMatch(/\(2.*1\)$/)
       })
       test(`[B3 ${label}] Actions: up, up
           Coordinates should be (2,1)`, () => {
-       
+        fireEvent.click(up)
+        fireEvent.click(up)
         expect(coordinates.textContent).toMatch(/\(2.*1\)$/)
       })
       test(`[B4 ${label}] Actions: up, left
@@ -403,18 +404,13 @@ test('AppClass is a class-based component, Review how to build a class-based com
         fireEvent.click(submit)
         await screen.findByText('lady win #73', queryOptions, waitForOptions)
       })
-      test(`[F4 ${label}] Actions: down, right, submit Error message on no email is correct`, async () => {
-        fireEvent.click(down);
-        fireEvent.click(right);
-        fireEvent.change(email, { target: { value: 'lady@gaga.com' } });
-        fireEvent.click(submit); // Assuming you have a submit button in your form
-      
-        // Wait for the error message to appear using a more flexible text matcher
-        await waitFor(() => {
-          expect(screen.getByText(/Ouch: email is required/i)).toBeInTheDocument();
-        });
-      });
-
+      test(`[F4 ${label}] Actions: down, right, submit
+          Error message on no email is correct`, async () => {
+        fireEvent.click(down)
+        fireEvent.click(right)
+        fireEvent.click(submit)
+        await screen.findByText('Ouch: email is required', queryOptions, waitForOptions)
+      })
       test(`[F5 ${label}] Actions: down, right, type invalid email, submit
           Error message on invalid email is correct`, async () => {
         fireEvent.click(down)
