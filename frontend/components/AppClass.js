@@ -17,12 +17,12 @@ export default class AppClass extends React.Component {
   }
 
   getXY = (value) => {
-    // It it not necessary to have a state to track the coordinates.
-    // It's enough to know what index the "B" is at, to be able to calculate them.
-    const X = parseInt(value / 3) + 1;
-    const Y = value % 3 + 1;
+    // Calculate the X and Y coordinates correctly.
+    const X = value % 3 + 1;
+    const Y = parseInt(value / 3) + 1;
     this.setState({ XY: { X, Y } });
   }
+  
 
   reset = () => {
     // Use this helper to reset all states to their initial values.
