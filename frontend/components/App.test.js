@@ -426,14 +426,17 @@ test('AppClass is a class-based component, Review how to build a class-based com
       });
       
       test(`[F5 ${label}] Actions: down, right, type invalid email, submit Error message on invalid email is correct`, async () => {
+        render(<AppFunctional/>)
         fireEvent.click(down);
         fireEvent.click(right);
         fireEvent.change(email, { target: { value: 'bad@email' } });
         fireEvent.click(submit);
       
-        const errorElement =  screen.findByText(/Ouch: email must be a valid email/i);
+        await waitFor(()=>{
+        const errorElement =  screen.queryByText(/Ouch: email must be a valid email/i);
         expect(errorElement).toBeInTheDocument();
-      });
+      })
+    })
       
       
       test(`[F6 ${label}] Actions: down, right, type foo@bar.baz email, submit
