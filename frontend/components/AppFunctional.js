@@ -118,7 +118,7 @@ export default function AppFunctional(props) {
     }
   
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setMessage('Invalid email address');
+      setMessage('Ouch: email must be a valid email');
       return;
     }
   
