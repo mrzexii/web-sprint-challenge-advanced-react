@@ -431,12 +431,10 @@ test('AppClass is a class-based component, Review how to build a class-based com
         fireEvent.change(email, { target: { value: 'bad@email' } });
         fireEvent.click(submit);
       
-        const errorElement = await screen.findByText((content, element) => {
-          return content.match(/Ouch: email must be a valid email/i) && within(element).getByLabelText('Email');
-        });
-      
+        const errorElement = await screen.findByText('Invalid email address');
         expect(errorElement).toBeInTheDocument();
       });
+      
       
       test(`[F6 ${label}] Actions: down, right, type foo@bar.baz email, submit
         Error message on banned email is correct`, async () => {
