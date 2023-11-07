@@ -9,10 +9,12 @@ export default function AppFunctional(props) {
   const [email, setEmail] = useState('');
 
   function getXY(value) {
-    const X = parseInt(value / 3) + 1;
-    const Y = value % 3 + 1;
-    setXY({ X, Y });
+    // Calculate the X and Y coordinates based on the current index
+    const x = value % 3 + 1;
+    const y = Math.floor(value / 3) + 1;
+    setXY({ X: x, Y: y });
   }
+  
 
   function reset() {
     setXY({ X: 2, Y: 2 });
