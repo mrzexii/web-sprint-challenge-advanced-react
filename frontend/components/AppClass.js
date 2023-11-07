@@ -1,3 +1,4 @@
+
 import React from 'react'
 import axios from 'axios'
 
@@ -6,7 +7,6 @@ export default class AppClass extends React.Component {
   // You can delete them and build your own logic from scratch.
   constructor(props) {
     super(props);
-
     this.state = {
       XY: { X: 2, Y: 2 },
       index: 4,
@@ -15,15 +15,12 @@ export default class AppClass extends React.Component {
       email: '',
     };
   }
-
   getXY = (value) => {
-    // It it not necessary to have a state to track the coordinates.
-    // It's enough to know what index the "B" is at, to be able to calculate them.
-    const X = parseInt(value / 3) + 1;
-    const Y = value % 3 + 1;
+    const X = value % 3 + 1;
+    const Y = parseInt(value / 3) + 1;
     this.setState({ XY: { X, Y } });
   }
-
+  
   reset = () => {
     // Use this helper to reset all states to their initial values.
     this.setState({
@@ -34,7 +31,6 @@ export default class AppClass extends React.Component {
       email: '',
     });
   }
-
   getNextIndex = (direction) => {
     // This helper takes a direction ("left", "up", etc) and calculates what the next index
     // of the "B" would be. If the move is impossible because we are at the edge of the grid,
@@ -73,7 +69,6 @@ export default class AppClass extends React.Component {
         break;
     }
   }
-
   move = (evt) => {
     // This event handler can use the helper above to obtain a new index for the "B",
     // and change any states accordingly.
@@ -129,9 +124,7 @@ export default class AppClass extends React.Component {
         break;
     }
   }
-
   onSubmit = (evt) => {
-    // Use a POST request to send a payload to the server.
     evt.preventDefault();
     const { XY, steps, email } = this.state;
     axios
@@ -143,10 +136,13 @@ export default class AppClass extends React.Component {
       })
       .then((res) => {
         this.setState({ message: res.data.message });
+      })
+      .catch((error) => {
+        this.setState({ message: "An error occurred while sending the data to the server." });
       });
     this.setState({ email: '' });
   }
-
+  
   render() {
     const { className } = this.props
     const { XY, index, steps, message, email } = this.state;
