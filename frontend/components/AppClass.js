@@ -1,7 +1,9 @@
-import React from 'react';
-import axios from 'axios';
+import React from 'react'
+import axios from 'axios'
 
 export default class AppClass extends React.Component {
+  // THE FOLLOWING HELPERS ARE JUST RECOMMENDATIONS.
+  // You can delete them and build your own logic from scratch.
   constructor(props) {
     super(props);
 
@@ -15,12 +17,15 @@ export default class AppClass extends React.Component {
   }
 
   getXY = (value) => {
+    // Calculate the X and Y coordinates correctly.
     const X = value % 3 + 1;
     const Y = parseInt(value / 3) + 1;
     this.setState({ XY: { X, Y } });
   }
+  
 
   reset = () => {
+    // Use this helper to reset all states to their initial values.
     this.setState({
       XY: { X: 2, Y: 2 },
       index: 4,
@@ -31,6 +36,9 @@ export default class AppClass extends React.Component {
   }
 
   getNextIndex = (direction) => {
+    // This helper takes a direction ("left", "up", etc) and calculates what the next index
+    // of the "B" would be. If the move is impossible because we are at the edge of the grid,
+    // this helper should return the current index unchanged.
     const { index } = this.state;
     switch (direction) {
       case 'left':
@@ -67,6 +75,8 @@ export default class AppClass extends React.Component {
   }
 
   move = (evt) => {
+    // This event handler can use the helper above to obtain a new index for the "B",
+    // and change any states accordingly.
     const { index, steps } = this.state;
     this.setState({ message: '' })
     let nextValue;
@@ -121,6 +131,7 @@ export default class AppClass extends React.Component {
   }
 
   onSubmit = (evt) => {
+    // Use a POST request to send a payload to the server.
     evt.preventDefault();
     const { XY, steps, email } = this.state;
     axios
