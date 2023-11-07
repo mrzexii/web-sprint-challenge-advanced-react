@@ -42,3 +42,15 @@ test('Displays the error message for no email using a regex matcher', () => {
   fireEvent.click(submitButton);
   expect(screen.getByText(/Ouch: email is required/)).toBeInTheDocument();
 });
+
+test('Displays the error message for a banned email using a regex matcher', () => {
+  render(<AppFunctional />);
+  const emailInput = screen.getByRole('textbox', { name: 'type email' });
+  const submitButton = screen.getByRole('button', { name: 'Submit Email' });
+
+  // Enter the banned email 'foo@bar.baz' and trigger form submission
+  fireEvent.change(emailInput, { target: { value: 'foo@bar.baz' } });
+  fireEvent.click(submitButton);
+
+  expect(screen.getByText(/foo@bar.baz failure #71/)).toBeInTheDocument();
+});
