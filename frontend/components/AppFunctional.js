@@ -110,7 +110,7 @@ export default function AppFunctional(props) {
 
   function onSubmit(evt) {
     evt.preventDefault();
-    
+  
     if (!email) {
       setMessage('Ouch: email is required'); // Set the error message for missing email.
       return;
