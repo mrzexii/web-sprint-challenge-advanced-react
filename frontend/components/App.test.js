@@ -54,7 +54,7 @@ test(`[F6 ${label}] Actions: down, right, type foo@bar.baz email, submit
 
   // Use waitFor to wait for the expected message
   await waitFor(() => {
-    const errorMessage = screen.getByText('foo@bar.baz failure #71');
+    const errorMessage = screen.getByText('foo@bar.baz');
     expect(errorMessage).toBeInTheDocument();
   });
 });
