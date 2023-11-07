@@ -426,9 +426,9 @@ test('AppClass is a class-based component, Review how to build a class-based com
       fireEvent.change(screen.getByRole('textbox', { name: /type email/i }), { target: { value: 'bad@email' } });
       fireEvent.click(screen.getByRole('button', { name: /submit email/i }));
     
-      await waitFor(() => {
-        expect(screen.getByText('Invalid email address', { exact: false })).toBeInTheDocument();
-      }, waitForOptions);
+      await screen.findByText((content, element) => {
+        return content.includes('Invalid email address');
+      }, { exact: false, timeout: 5000 });
     });
     test(`[F6 ${label}] Actions: down, right, type foo@bar.baz email, submit
   Error message on banned email is correct`, async () => {
