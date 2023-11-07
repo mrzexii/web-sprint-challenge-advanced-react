@@ -107,7 +107,7 @@ export default function AppFunctional(props) {
     evt.preventDefault();
 
     if (!email) {
-      setMessage('Ouch: email is required');
+      setMessage('Ouch: email must be a valid email');
       return;
     }
 
