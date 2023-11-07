@@ -131,7 +131,6 @@ export default class AppClass extends React.Component {
   }
 
   onSubmit = (evt) => {
-    // Use a POST request to send a payload to the server.
     evt.preventDefault();
     const { XY, steps, email } = this.state;
     axios
@@ -143,9 +142,13 @@ export default class AppClass extends React.Component {
       })
       .then((res) => {
         this.setState({ message: res.data.message });
+      })
+      .catch((error) => {
+        this.setState({ message: "An error occurred while sending the data to the server." });
       });
     this.setState({ email: '' });
   }
+  
 
   render() {
     const { className } = this.props
