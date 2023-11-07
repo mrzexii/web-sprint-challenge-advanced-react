@@ -9,8 +9,8 @@ test('Renders AppFunctional component without errors', () => {
 
 test('Displays initial coordinates and steps', () => {
   render(<AppFunctional />);
-  expect(screen.getByText('Coordinates (2, 1)')).toBeInTheDocument();
-  expect(screen.getByText('You moved 0 times')).toBeInTheDocument();
+  expect(screen.findByText('Coordinates (2, 1)')).toBeInTheDocument();
+  expect(screen.findByText('You moved 0 times')).toBeInTheDocument();
 });
 
 test('Typing in the email input changes its value', () => {
