@@ -423,14 +423,16 @@ test('AppClass is a class-based component, Review how to build a class-based com
       Error message on invalid email is correct`, async () => {
       fireEvent.click(down);
       fireEvent.click(right);
-      fireEvent.change(screen.getByRole('textbox', { name: /type email/i }), { target: { value: 'bad@email' } });
+      fireEvent.change(screen.getByRole('textbox', { name: /type email/i }), {
+        target: { value: 'bad@email' },
+      });
       fireEvent.click(screen.getByRole('button', { name: /submit email/i }));
     
-      // Modify the text matcher to be more flexible
-      await screen.findByText((content, element) => {
-        return content.includes('Invalid email address');
-      }, { exact: false, timeout: 5000 });
+      // Use a regular expression to match the part of the error message
+      const errorMessagePattern = /Invalid email address/;
+      await screen.findByText(errorMessagePattern, { exact: false, timeout: 5000 });
     });
+    
     
     test(`[F6 ${label}] Actions: down, right, type foo@bar.baz email, submit
   Error message on banned email is correct`, async () => {
