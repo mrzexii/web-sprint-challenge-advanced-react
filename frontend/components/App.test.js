@@ -35,3 +35,10 @@ test('Input value changes when typing', () => {
   fireEvent.change(emailInput, { target: { value: 'new-email@example.com' } });
   expect(emailInput).toHaveValue('new-email@example.com');
 });
+
+test('Displays the error message for no email using a regex matcher', () => {
+  render(<AppFunctional />);
+  const submitButton = screen.getByRole('button', { name: 'Submit Email' });
+  fireEvent.click(submitButton);
+  expect(screen.getByText(/Ouch: email is required/)).toBeInTheDocument();
+});
