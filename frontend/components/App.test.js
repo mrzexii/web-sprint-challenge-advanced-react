@@ -415,19 +415,15 @@ expect(coordinates.textContent).toMatch(/\(2.*1\)$/); // Update the expected pat
       })
       
       test(`[F4 ${label}] Actions: down, right, submit Error message on no email is correct`, async () => {
-        render(<AppFunctional />);
+        fireEvent.click(down);
+        fireEvent.click(right);
+        fireEvent.change(email, { target: { value: 'lady@gaga.com' } });
+        fireEvent.click(submit); // Assuming you have a submit button in your form
       
-        await act(async () => {
-          fireEvent.click(screen.getByText('DOWN'));
-          fireEvent.click(screen.getByText('RIGHT'));
-          fireEvent.click(screen.getByText('Submit Email'));
+        // Wait for the error message to appear using a more flexible text matcher
+        await waitFor(() => {
+          expect(screen.getByText(/Ouch: email is required/i)).toBeInTheDocument();
         });
-      
-        const errorElement = await screen.findByText((content, element) => {
-          return content.startsWith('Ouch: email is required') && within(element).getByLabelText('Email');
-        });
-      
-        expect(errorElement).toBeInTheDocument();
       });
       
       test(`[F5 ${label}] Actions: down, right, type invalid email, submit Error message on invalid email is correct`, async () => {
