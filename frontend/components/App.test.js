@@ -17,11 +17,16 @@ test('Typing in the email input changes its value', () => {
   fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
   expect(emailInput).toHaveValue('test@example.com');
 });
-test('Displays error message on missing email', () => {
+test('Displays error message on missing email', async () => {
   render(<AppFunctional />);
   const submitButton = screen.getByRole('button', { name: 'Submit Email' });
   fireEvent.click(submitButton);
-  expect(screen.getByText('Ouch: email is required')).toBeInTheDocument();
+
+  // Use queryByText to look for the error message
+  const errorMessage = screen.queryByText(/Ouch: email is required/);
+
+  // Check if the errorMessage is null (not found) or if it exists
+  expect(errorMessage).not.toBeNull();
 });
 test('Reset button resets the component', () => {
   render(<AppFunctional />);
