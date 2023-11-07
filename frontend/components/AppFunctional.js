@@ -118,18 +118,23 @@ export default function AppFunctional(props) {
     }
   
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setMessage('Ouch: email must be a valid email');
+      setMessage('Invalid email address');
       return;
     }
   
-    axios.post('http://localhost:9000/api/result', {
-      email,
-      x: XY.X,
-      y: XY.Y,
-      steps,
-    }).then((res) => {
-      setMessage(res.data.message);
-    });
+    if (email === 'foo@bar.baz') {
+      setMessage('foo@bar.baz failure #71');
+    } else {
+      // Simulate the actual HTTP request behavior here
+      axios.post('http://localhost:9000/api/result', {
+        email,
+        x: XY.X,
+        y: XY.Y,
+        steps,
+      }).then((res) => {
+        setMessage(res.data.message);
+      });
+    }
   
     setEmail('');
   }
