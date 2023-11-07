@@ -109,36 +109,36 @@ export default function AppFunctional(props) {
     }
   }
 
-  function onSubmit(evt) {
+  onSubmit = (evt) => {
     evt.preventDefault();
-  
-    if (!email) {
-      setMessage('Ouch: email is required'); // Set the error message for missing email.
+
+    if (!this.state.email) {
+      this.setState({ message: 'Ouch: email is required' });
       return;
     }
-  
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setMessage('Invalid email address');
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.state.email)) {
+      this.setState({ message: 'Invalid email address' });
       return;
     }
-  
-    if (email === 'foo@bar.baz') {
-      setMessage('foo@bar.baz failure #71');
+
+    if (this.state.email === 'foo@bar.baz') {
+      this.setState({ message: 'foo@bar.baz failure #71' });
     } else {
-      // Simulate the actual HTTP request behavior here
-      axios.post('http://localhost:9000/api/result', {
-        email,
-        x: XY.X,
-        y: XY.Y,
-        steps,
-      }).then((res) => {
-        setMessage(res.data.message);
-      });
+      axios
+        .post('http://localhost:9000/api/result', {
+          email: this.state.email,
+          x: this.state.XY.X,
+          y: this.state.XY.Y,
+          steps: this.state.steps,
+        })
+        .then((res) => {
+          this.setState({ message: res.data.message });
+        });
     }
-  
-    setEmail('');
+
+    this.setState({ email: '' });
   }
-  
 
   return (
     <div id="wrapper" className={props.className}>
