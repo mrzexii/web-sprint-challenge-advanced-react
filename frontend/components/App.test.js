@@ -426,7 +426,7 @@ test('AppClass is a class-based component, Review how to build a class-based com
       fireEvent.click(right);
       fireEvent.change(email, { target: { value: 'bad@email' } });
       fireEvent.click(submit);
-      await screen.findByText('Invalid email address', queryOptions, waitForOptions);
+      await screen.findByText(' Ouch: email must be a valid email', queryOptions, waitForOptions);
     });
     
     test(`[F6 ${label}] Actions: down, right, type foo@bar.baz email, submit
