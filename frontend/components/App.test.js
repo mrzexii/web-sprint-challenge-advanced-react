@@ -413,21 +413,29 @@ test('AppClass is a class-based component, Review how to build a class-based com
         await screen.findByText('lady win #73', queryOptions, waitForOptions)
       })
       
-      test(`[F4 ${label}] Actions: down, right, submit Error message on no email is correct`, () => {
+      test(`[F4 ${label}] Actions: down, right, submit Error message on no email is correct`, async () => {
         fireEvent.click(down);
         fireEvent.click(right);
         fireEvent.click(submit);
-        
-        return expect(screen.findByText('Ouch: email is required', queryOptions)).resolves.toBeInTheDocument();
+      
+        const errorElement = await screen.findByText((content, element) => {
+          return content.startsWith('Ouch: email is required') && within(element).getByLabelText('Email');
+        });
+      
+        expect(errorElement).toBeInTheDocument();
       });
       
-      test(`[F5 ${label}] Actions: down, right, type invalid email, submit Error message on invalid email is correct`, () => {
+      test(`[F5 ${label}] Actions: down, right, type invalid email, submit Error message on invalid email is correct`, async () => {
         fireEvent.click(down);
         fireEvent.click(right);
         fireEvent.change(email, { target: { value: 'bad@email' } });
         fireEvent.click(submit);
-        
-        return expect(screen.findByText(/Ouch: email must be a valid email/i, {}, { timeout: 5000 })).resolves.toBeInTheDocument();
+      
+        const errorElement = await screen.findByText((content, element) => {
+          return content.match(/Ouch: email must be a valid email/i) && within(element).getByLabelText('Email');
+        });
+      
+        expect(errorElement).toBeInTheDocument();
       });
       
       test(`[F6 ${label}] Actions: down, right, type foo@bar.baz email, submit
