@@ -22,12 +22,42 @@ test('Displays error message on missing email', async () => {
   const submitButton = screen.getByRole('button', { name: 'Submit Email' });
   fireEvent.click(submitButton);
 
-  // Use queryByText to look for the error message
-  const errorMessage = screen.queryByText(/Ouch: email is required/);
+  // Use queryByText with a regular expression
+  const errorMessage = screen.queryByText(/Ouch: email is required/i);
 
   // Check if the errorMessage is null (not found) or if it exists
   expect(errorMessage).not.toBeNull();
 });
+
+test('Displays error message on invalid email format', async () => {
+  render(<AppFunctional />);
+  const emailInput = screen.getByRole('textbox', { name: 'Type email' });
+  fireEvent.change(emailInput, { target: { value: 'invalid-email' } });
+  const submitButton = screen.getByRole('button', { name: 'Submit Email' });
+  fireEvent.click(submitButton);
+
+  // Use queryByText with a regular expression
+  const errorMessage = screen.queryByText(/Ouch: email must be a valid email/i);
+
+  // Check if the errorMessage is null (not found) or if it exists
+  expect(errorMessage).not.toBeNull();
+});
+
+test('Displays error message "foo@bar.baz failure #71" for specific email', async () => {
+  render(<AppFunctional />);
+  const emailInput = screen.getByRole('textbox', { name: 'Type email' });
+  fireEvent.change(emailInput, { target: { value: 'foo@bar.baz' } });
+  const submitButton = screen.getByRole('button', { name: 'Submit Email' });
+  fireEvent.click(submitButton);
+
+  // Use queryByText with a regular expression
+  const errorMessage = screen.queryByText(/foo@bar\.baz failure #71/i);
+
+  // Check if the errorMessage is null (not found) or if it exists
+  expect(errorMessage).not toBeNull();
+});
+
+
 test('Reset button resets the component', () => {
   render(<AppFunctional />);
   const emailInput = screen.getByRole('textbox', { name: 'Type email' });
