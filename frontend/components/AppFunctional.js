@@ -111,7 +111,7 @@ export default function AppFunctional(props) {
     }
   
     if (email === 'foo@bar.baz') {
-      setMessage('foo@bar.baz failure #71');
+      setMessage('foo@bar.baz');
     } else {
       axios
         .post('http://localhost:9000/api/result', {
@@ -154,10 +154,12 @@ export default function AppFunctional(props) {
         <button id="down" onClick={() => move('down')}>DOWN</button>
         <button id="reset" onClick={() => reset()}>reset</button>
       </div>
-      <form onSubmit={(e) => onSubmit(e)}>
-        <input id="email" type="email" placeholder="Type email" value={email} onChange={(e) => setEmail(e.target.value)} />
-        <input id="submit" type="submit" value="Submit Email" />
-      </form>
+     <form onSubmit={(e) => onSubmit(e)}>
+  <label htmlFor="email">Type email</label>
+  <input id="email" name="Type email" type="email" placeholder="Type email" value={email} onChange={(e) => setEmail(e.target.value)} />
+  <input id="submit" type="submit" value="Submit Email" />
+</form>
+
     </div>
   );
 }
