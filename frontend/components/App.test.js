@@ -428,13 +428,14 @@ test('AppClass is a class-based component, Review how to build a class-based com
         await screen.findByText('Ouch: email must be a valid email', queryOptions, waitForOptions)
       })
       test(`[F6 ${label}] Actions: down, right, type foo@bar.baz email, submit
-        Error message on banned email is correct`, async () => {
-        fireEvent.click(down)
-        fireEvent.click(right)
-        fireEvent.change(email, { target: { value: 'foo@bar.baz' } })
-        fireEvent.click(submit)
-        await screen.findByText('foo@bar.baz failure #71', queryOptions, waitForOptions)
-      })
+      Error message on banned email is correct`, async () => {
+      fireEvent.click(down);
+      fireEvent.click(right);
+      fireEvent.change(screen.getByRole('textbox', { name: /type email/i }), { target: { value: 'foo@bar.baz' } });
+      fireEvent.click(screen.getByRole('button', { name: /submit email/i }));
+      await screen.findByText('foo@bar.baz failure #71', queryOptions, waitForOptions);
+    });
+    
       test(`[F7 ${label}] Actions: left, type valid email, submit
         Submitting resets the email input`, async () => {
         fireEvent.click(left)
