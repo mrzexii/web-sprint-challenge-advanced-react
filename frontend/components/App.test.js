@@ -422,22 +422,20 @@ test('AppClass is a class-based component, Review how to build a class-based com
       await screen.findByText('Ouch: email is required', queryOptions, waitForOptions);
     });
     
-    test(`[F5 ${label}] Actions: down, right, type invalid email, submit
-  Error message on invalid email is correct`, async () => {
-  fireEvent.click(down);
-  fireEvent.click(right);
-  fireEvent.change(email, { target: { value: 'bad@email' } });
-  fireEvent.click(submit);
-
-  // Use a custom text matcher function
-  const customTextMatcher = (content, element) => {
-    // Check if the element's text contains the expected error message
-    return element.textContent.includes('Invalid email address');
-  };
-
-  await screen.findByText(customTextMatcher, { exact: false, timeout: 5000 });
-});
-
+    test('[F5 FUNCTIONAL] Actions: down, right, type invalid email, submit Error message on invalid email is correct', async () => {
+      fireEvent.click(down);
+      fireEvent.click(right);
+      fireEvent.change(email, { target: { value: 'bad@email' } });
+      fireEvent.click(submit);
+    
+      const customTextMatcher = (content, element) => {
+        // Check if the element's text contains the expected error message
+        return element.textContent.includes('Invalid email address');
+      };
+    
+      await screen.findByText(customTextMatcher, { exact: false, timeout: 5000 });
+    });
+    
     
 test(`[F6 ${label}] Actions: down, right, type foo@bar.baz email, submit Error message on banned email is correct`, async () => {
   fireEvent.click(down);
