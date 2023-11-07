@@ -1,6 +1,6 @@
 import React from 'react'
 import axios from 'axios'
-import { act } from 'react-dom/test-utils';
+
 
 export default class AppClass extends React.Component {
   // THE FOLLOWING HELPERS ARE JUST RECOMMENDATIONS.
@@ -129,35 +129,23 @@ export default class AppClass extends React.Component {
     }
   }
 
- onSubmit(evt) {
+  onSubmit = (evt) => {
     evt.preventDefault();
-  
-    if (!email) {
-      act(() => setMessage('Ouch: email must be a valid email'));
-      return;
-    }
-  
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      act(() => setMessage('Invalid email address'));
-      return;
-    }
-  
-    if (email === 'foo@bar.baz') {
-      act(() => setMessage('foo@bar.baz failure #71'));
-    } else {
-      axios
-        .post('http://localhost:9000/api/result', {
-          email: email,
-          x: XY.X,
-          y: XY.Y,
-          steps: steps,
-        })
-        .then((res) => {
-          act(() => setMessage(res.data.message));
-        });
-    }
-  
-    setEmail('');
+    const { XY, steps, email } = this.state;
+    axios
+      .post('http://localhost:9000/api/result', {
+        email,
+        x: XY.X,
+        y: XY.Y,
+        steps,
+      })
+      .then((res) => {
+        this.setState({ message: res.data.message });
+      })
+      .catch((error) => {
+        this.setState({ message: "An error occurred while sending the data to the server." });
+      });
+    this.setState({ email: '' });
   }
   
 
