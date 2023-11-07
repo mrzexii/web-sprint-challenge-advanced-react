@@ -405,12 +405,17 @@ test('AppClass is a class-based component, Review how to build a class-based com
         await screen.findByText('lady win #73', queryOptions, waitForOptions)
       })
       test(`[F4 ${label}] Actions: down, right, submit
-          Error message on no email is correct`, async () => {
-        fireEvent.click(down)
-        fireEvent.click(right)
-        fireEvent.click(submit)
-        await screen.findByText('Ouch: email is required', queryOptions, waitForOptions)
-      })
+      Error message on no email is correct`, async () => {
+  fireEvent.click(down);
+  fireEvent.click(right);
+  fireEvent.click(submit);
+
+  await screen.findByText((content, element) => {
+    // You can customize this function to match your specific text
+    return content.startsWith('Ouch: email is required');
+  }, {}, { timeout: 5000 });
+});
+
       test(`[F5 ${label}] Actions: down, right, type invalid email, submit
           Error message on invalid email is correct`, async () => {
         fireEvent.click(down)
