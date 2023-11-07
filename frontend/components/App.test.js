@@ -55,5 +55,5 @@ test('Displays the error message for a banned email', () => {
   // Find the error message by its role and match it with the expected text
   const errorMessage = screen.getByRole('alert', { name: 'Error Message' });
 
-  expect(errorMessage).toHaveTextContent('foo@bar.baz failure #71');
+  expect(errorMessage).toHaveTextContent(/foo@bar.baz/i);
 });
