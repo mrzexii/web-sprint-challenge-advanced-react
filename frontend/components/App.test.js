@@ -36,24 +36,22 @@ test('Input value changes when typing', () => {
   expect(emailInput).toHaveValue('new-email@example.com');
 });
 
-test('Displays the error message for no email using a regex matcher', () => {
+test('Displays the error message for no email', () => {
   render(<AppFunctional />);
   const submitButton = screen.getByRole('button', { name: 'Submit Email' });
   fireEvent.click(submitButton);
-  expect(screen.getByText(/Ouch: email is required/)).toBeInTheDocument();
+  expect(screen.getByText('Ouch: email is required')).toBeInTheDocument();
 });
 
-test('Displays the error message for a banned email', () => {
+test('Displays the error message for a banned email', async () => {
   render(<AppFunctional />);
   const emailInput = screen.getByRole('textbox', { name: 'type email' });
   const submitButton = screen.getByRole('button', { name: 'Submit Email' });
 
-  // Enter the banned email 'foo@bar.baz' and trigger form submission
   fireEvent.change(emailInput, { target: { value: 'foo@bar.baz' } });
   fireEvent.click(submitButton);
 
-  // Find the error message by its role and match it with the expected text
-  const errorMessage = screen.getByRole('alert', { name: 'Error Message' });
+  const errorMessage = await screen.findByRole('alert');
 
   expect(errorMessage).toHaveTextContent(/foo@bar.baz/i);
 });
