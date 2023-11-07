@@ -110,10 +110,17 @@ export default function AppFunctional(props) {
 
   function onSubmit(evt) {
     evt.preventDefault();
+    
+    if (!email) {
+      setMessage('Ouch: email is required'); // Set the error message for missing email.
+      return;
+    }
+  
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setMessage('Invalid email address');
       return;
     }
+  
     axios.post('http://localhost:9000/api/result', {
       email,
       x: XY.X,
@@ -122,8 +129,10 @@ export default function AppFunctional(props) {
     }).then((res) => {
       setMessage(res.data.message);
     });
+  
     setEmail('');
   }
+  
 
   return (
     <div id="wrapper" className={props.className}>
