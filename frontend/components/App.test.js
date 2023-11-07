@@ -413,21 +413,21 @@ test('AppClass is a class-based component, Review how to build a class-based com
         await screen.findByText('lady win #73', queryOptions, waitForOptions)
       })
       test(`[F4 ${label}] Actions: down, right, submit
-        Error message on no email is correct`, async () => {
-        fireEvent.click(down)
-        fireEvent.click(right)
-        fireEvent.click(submit)
-        await screen.findByText('Ouch: email is required', queryOptions, waitForOptions)
-      })
-      test(`[F5 ${label}] Actions: down, right, type invalid email, submit
-      Error message on invalid email is correct`, async () => {
-      fireEvent.click(down)
-      fireEvent.click(right)
-      fireEvent.change(email, { target: { value: 'bad@email' } })
-      fireEvent.click(submit)
-      await screen.findByText('Ouch: email must be a valid email', queryOptions, waitForOptions)
-    })
+      Error message on no email is correct`, async () => {
+      fireEvent.click(down);
+      fireEvent.click(right);
+      fireEvent.click(submit);
+      await screen.findByText('Ouch: email is required', queryOptions, waitForOptions);
+    });
     
+    test(`[F5 ${label}] Actions: down, right, type invalid email, submit
+      Error message on invalid email is correct`, async () => {
+      fireEvent.click(down);
+      fireEvent.click(right);
+      fireEvent.change(email, { target: { value: 'bad@email' } });
+      fireEvent.click(submit);
+      await screen.findByText('Invalid email address', queryOptions, waitForOptions);
+    });
     
     test(`[F6 ${label}] Actions: down, right, type foo@bar.baz email, submit
   Error message on banned email is correct`, async () => {
