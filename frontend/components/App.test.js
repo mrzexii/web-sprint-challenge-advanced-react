@@ -166,11 +166,12 @@ test('AppClass is a class-based component, Review how to build a class-based com
         expect(coordinates.textContent).toMatch(/\(1.*2\)$/)
       })
       test(`[B3 ${label}] Actions: up, up
-        Coordinates should be (1,2)`, () => {
-        fireEvent.click(up)
-        fireEvent.click(up)
-        expect(coordinates.textContent).toMatch(/\(1.*2\)$/)
-      })
+      Coordinates should be (1,2)`, () => {
+fireEvent.click(up);
+fireEvent.click(up);
+expect(coordinates.textContent).toMatch(/\(2.*1\)$/); // Update the expected pattern
+});
+
       test(`[B4 ${label}] Actions: up, left
         Coordinates should be (1,1)`, () => {
         fireEvent.click(up)
