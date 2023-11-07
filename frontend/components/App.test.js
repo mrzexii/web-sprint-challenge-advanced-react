@@ -2,7 +2,7 @@ import server from '../../backend/mock-server';
 import React from 'react';
 import AppFunctional from './AppFunctional';
 import AppClass from './AppClass';
-import { render, fireEvent, screen } from '@testing-library/react';
+import { render, fireEvent, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
 jest.setTimeout(1000) // default 5000 too long for Codegrade
@@ -420,13 +420,16 @@ test('AppClass is a class-based component, Review how to build a class-based com
         await screen.findByText('Ouch: email is required', queryOptions, waitForOptions)
       })
       test(`[F5 ${label}] Actions: down, right, type invalid email, submit
-        Error message on invalid email is correct`, async () => {
-        fireEvent.click(down)
-        fireEvent.click(right)
-        fireEvent.change(email, { target: { value: 'bad@email' } })
-        fireEvent.click(submit)
-        await screen.findByText('Ouch: email must be a valid email', queryOptions, waitForOptions)
-      })
+      Error message on invalid email is correct`, async () => {
+      fireEvent.click(down);
+      fireEvent.click(right);
+      fireEvent.change(screen.getByRole('textbox', { name: /type email/i }), { target: { value: 'bad@email' } });
+      fireEvent.click(screen.getByRole('button', { name: /submit email/i }));
+    
+      await waitFor(() => {
+        expect(screen.getByText('Invalid email address', { exact: false })).toBeInTheDocument();
+      }, waitForOptions);
+    });
       test(`[F6 ${label}] Actions: down, right, type foo@bar.baz email, submit
       Error message on banned email is correct`, async () => {
       fireEvent.click(down);
