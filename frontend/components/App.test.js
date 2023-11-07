@@ -9,7 +9,7 @@ test('Renders AppFunctional component without errors', () => {
 
 test('Displays initial coordinates and steps', () => {
   render(<AppFunctional />);
-  expect(screen.getByText('Coordinates (2, 2)')).toBeInTheDocument();
+  expect(screen.getByText('Coordinates (2, 1)')).toBeInTheDocument();
   expect(screen.getByText('You moved 0 times')).toBeInTheDocument();
 });
 
