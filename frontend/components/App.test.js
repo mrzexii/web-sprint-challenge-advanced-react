@@ -431,7 +431,7 @@ test('AppClass is a class-based component, Review how to build a class-based com
         fireEvent.change(email, { target: { value: 'bad@email' } });
         fireEvent.click(submit);
       
-        const errorElement = await screen.findByText('Invalid email address');
+        const errorElement =  screen.findByText(/Ouch: email must be a valid email/i);
         expect(errorElement).toBeInTheDocument();
       });
       
