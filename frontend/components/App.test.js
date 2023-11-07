@@ -43,7 +43,7 @@ test('Displays the error message for no email using a regex matcher', () => {
   expect(screen.getByText(/Ouch: email is required/)).toBeInTheDocument();
 });
 
-test('Displays the error message for a banned email using a regex matcher', () => {
+test('Displays the error message for a banned email', () => {
   render(<AppFunctional />);
   const emailInput = screen.getByRole('textbox', { name: 'type email' });
   const submitButton = screen.getByRole('button', { name: 'Submit Email' });
@@ -52,5 +52,8 @@ test('Displays the error message for a banned email using a regex matcher', () =
   fireEvent.change(emailInput, { target: { value: 'foo@bar.baz' } });
   fireEvent.click(submitButton);
 
-  expect(screen.getByText(/foo@bar.baz failure #71/)).toBeInTheDocument();
+  // Find the error message by its role and match it with the expected text
+  const errorMessage = screen.getByRole('alert', { name: 'Error Message' });
+
+  expect(errorMessage).toHaveTextContent('foo@bar.baz failure #71');
 });
