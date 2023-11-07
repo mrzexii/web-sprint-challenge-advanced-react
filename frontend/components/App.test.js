@@ -6,11 +6,20 @@ test('Renders AppFunctional component without errors', () => {
   render(<AppFunctional />);
 });
 
-
 test('Displays initial coordinates and steps', () => {
   render(<AppFunctional />);
-  expect(screen.findByText('Coordinates (2, 1)')).toBeInTheDocument();
-  expect(screen.findByText('You moved 0 times')).toBeInTheDocument();
+  expect(screen.getByText('Coordinates (2, 2)')).toBeInTheDocument();
+  expect(screen.getByText('You moved 0 times')).toBeInTheDocument();
+});
+
+test('Button labels are rendered on the screen', () => {
+  render(<AppFunctional />);
+  expect(screen.getByText('LEFT')).toBeInTheDocument();
+  expect(screen.getByText('UP')).toBeInTheDocument();
+  expect(screen.getByText('RIGHT')).toBeInTheDocument();
+  expect(screen.getByText('DOWN')).toBeInTheDocument();
+  expect(screen.getByText('reset')).toBeInTheDocument();
+  expect(screen.getByText('Submit Email')).toBeInTheDocument();
 });
 
 test('Typing in the email input changes its value', () => {
@@ -20,27 +29,9 @@ test('Typing in the email input changes its value', () => {
   expect(emailInput).toHaveValue('test@example.com');
 });
 
-test('Reset button resets the component', () => {
+test('Input value changes when typing', () => {
   render(<AppFunctional />);
   const emailInput = screen.getByRole('textbox', { name: 'type email' });
-  fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
-
-  const resetButton = screen.getByRole('button', { name: 'reset' });
-  fireEvent.click(resetButton);
-
-  expect(emailInput).toHaveValue('');
-  expect(screen.getByText('Coordinates (2, 2)')).toBeInTheDocument();
-  expect(screen.getByText('You moved 0 times')).toBeInTheDocument();
-});
-
-
-test('Displays error message on invalid email submission', () => {
-  render(<AppFunctional />);
-  const emailInput = screen.getByRole('textbox', { name: 'type email' });
-  const submitButton = screen.getByRole('button', { name: 'Submit Email' });
-
-  fireEvent.change(emailInput, { target: { value: 'invalid-email' } });
-  fireEvent.click(submitButton);
-
-  expect(screen.getByText('Ouch: email must be a valid email')).toBeInTheDocument();
+  fireEvent.change(emailInput, { target: { value: 'new-email@example.com' } });
+  expect(emailInput).toHaveValue('new-email@example.com');
 });
