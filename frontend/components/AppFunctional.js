@@ -74,6 +74,10 @@ export default function AppFunctional(props) {
 
   function onSubmit(evt) {
     evt.preventDefault();
+    if (!email) {
+      setMessage('Ouch: email is required');
+      return;
+    }
     axios
       .post('http://localhost:9000/api/result', {
         email,
