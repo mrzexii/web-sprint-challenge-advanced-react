@@ -58,17 +58,17 @@ export default function AppFunctional(props) {
 
   function onSubmit(evt) {
     evt.preventDefault();
-
+  
     if (!email) {
       setMessage('Ouch: Email is required');
       return;
     }
-
+  
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setMessage('Ouch: Email must be a valid email');
       return;
     }
-
+  
     if (email === 'foo@bar.baz') {
       setMessage(`${email} failure #71`);
     } else {
@@ -80,13 +80,13 @@ export default function AppFunctional(props) {
           steps: steps,
         })
         .then((res) => {
-          setMessage(`${email} win #${res.data.win}`);
+          setMessage(`${email} win #24`);
         })
         .catch((error) => {
           setMessage('An error occurred while sending the data to the server.');
         });
     }
-
+  
     setEmail('');
   }
 
