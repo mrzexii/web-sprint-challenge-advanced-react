@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent , waitFor} from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import AppFunctional from './AppFunctional';
 
 test('Renders AppFunctional component without errors', () => {
@@ -8,8 +8,8 @@ test('Renders AppFunctional component without errors', () => {
 
 test('Renders AppFunctional component with coordinates and step count', () => {
   render(<AppFunctional />);
-  expect(screen.getByText('Coordinates')).toBeInTheDocument();
-  expect(screen.getByText('You moved')).toBeInTheDocument();
+  expect(screen.getByText('Coordinates (2, 2)')).toBeInTheDocument();
+  expect(screen.getByText('You moved 0 times')).toBeInTheDocument();
 });
 
 test('Renders AppFunctional component with message', () => {
@@ -38,15 +38,14 @@ test('Renders AppFunctional component with submit button', () => {
   expect(screen.getByText('Submit Email')).toBeInTheDocument();
 });
 
-
 test('Check for custom error message', () => {
   render(<AppFunctional />);
-  
+
   // Write a custom matcher function
   const customMatcher = (content, element) => {
     return element.textContent.includes(content);
   };
-  
+
   // Use the custom matcher to find the error message
   const errorMessage = 'Ouch: email must be a valid email';
   expect(screen.getByText((content, element) => customMatcher(errorMessage, element))).toBeInTheDocument();
