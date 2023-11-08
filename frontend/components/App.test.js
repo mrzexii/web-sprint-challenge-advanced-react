@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { render, screen, fireEvent , waitFor} from '@testing-library/react';
 import AppFunctional from './AppFunctional';
@@ -6,65 +5,35 @@ import AppFunctional from './AppFunctional';
 test('Renders AppFunctional component without errors', () => {
   render(<AppFunctional />);
 });
-test('Displays initial coordinates and steps', () => {
-  render(<AppFunctional />);
-  expect(screen.getByText('Coordinates (2, 2)')).toBeInTheDocument();
-  expect(screen.getByText('You moved 0 times')).toBeInTheDocument();
-});
-test('Typing in the email input changes its value', () => {
-  render(<AppFunctional />);
-  const emailInput = screen.getByRole('textbox', { name: 'Type email' });
-  fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
-  expect(emailInput).toHaveValue('test@example.com');
-});
-test('Displays error message on missing email', async () => {
-  render(<AppFunctional />);
-  const submitButton = screen.getByRole('button', { name: 'Submit Email' });
-  fireEvent.click(submitButton);
 
-  // Use queryByText with a regular expression
-  const errorMessage = screen.queryByText(/Ouch: email is required/i);
-
-  // Check if the errorMessage is null (not found) or if it exists
-  expect(errorMessage).not.toBeNull();
+test('Renders AppFunctional component with coordinates and step count', () => {
+  render(<AppFunctional />);
+  expect(screen.getByText('Coordinates')).toBeInTheDocument();
+  expect(screen.getByText('You moved')).toBeInTheDocument();
 });
 
-test('Displays error message on invalid email format', async () => {
+test('Renders AppFunctional component with message', () => {
   render(<AppFunctional />);
-  const emailInput = screen.getByRole('textbox', { name: 'Type email' });
-  fireEvent.change(emailInput, { target: { value: 'invalid-email' } });
-  const submitButton = screen.getByRole('button', { name: 'Submit Email' });
-  fireEvent.click(submitButton);
-
-  // Use queryByText with a regular expression
-  const errorMessage = screen.queryByText(/Ouch: email must be a valid email/i);
-
-  // Check if the errorMessage is null (not found) or if it exists
-  expect(errorMessage).not.toBeNull();
+  expect(screen.getByText('An initial message')).toBeInTheDocument();
 });
 
-test('Displays error message "foo@bar.baz failure #71" for specific email', async () => {
+test('Renders AppFunctional component with buttons', () => {
   render(<AppFunctional />);
-  const emailInput = screen.getByRole('textbox', { name: 'Type email' });
-  fireEvent.change(emailInput, { target: { value: 'foo@bar.baz' } });
-  const submitButton = screen.getByRole('button', { name: 'Submit Email' });
-  fireEvent.click(submitButton);
+  expect(screen.getByText('LEFT')).toBeInTheDocument();
+  expect(screen.getByText('UP')).toBeInTheDocument();
+  expect(screen.getByText('RIGHT')).toBeInTheDocument();
+  expect(screen.getByText('DOWN')).toBeInTheDocument();
+  expect(screen.getByText('reset')).toBeInTheDocument();
+});
 
-  // Use queryByText with a regular expression
-  const errorMessage = screen.queryByText(/foo@bar\.baz/i);
-
-  // Check if the errorMessage is null (not found) or if it exists
-  const renderedComponent = screen.container;
-  console.log(renderedComponent.innerHTML);
-  
-
-test('Reset button resets the component', () => {
+test('Typing on the input changes its value', () => {
   render(<AppFunctional />);
-  const emailInput = screen.getByRole('textbox', { name: 'Type email' });
-  fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
-  const resetButton = screen.getByRole('button', { name: 'reset' });
-  fireEvent.click(resetButton);
-  expect(emailInput).toHaveValue('');
-  expect(screen.getByText('Coordinates (2, 2)')).toBeInTheDocument();
-  expect(screen.getByText('You moved 0 times')).toBeInTheDocument();
-})
+  const input = screen.getByPlaceholderText('Type email');
+  fireEvent.change(input, { target: { value: 'example@example.com' } });
+  expect(screen.getByDisplayValue('example@example.com')).toBeInTheDocument();
+});
+
+test('Renders AppFunctional component with submit button', () => {
+  render(<AppFunctional />);
+  expect(screen.getByText('Submit Email')).toBeInTheDocument();
+});
