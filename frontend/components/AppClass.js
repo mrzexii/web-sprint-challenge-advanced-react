@@ -1,13 +1,12 @@
-import React from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
 
-// Suggested initial states
 const initialMessage = '';
 const initialEmail = '';
 const initialSteps = 0;
-const initialIndex = 4; // the index the "B" is at
+const initialIndex = 4;
 
-class AppClass extends React.Component {
+class AppClass extends Component {
   constructor(props) {
     super(props);
 
@@ -21,7 +20,6 @@ class AppClass extends React.Component {
   }
 
   getXY(index) {
-    // Calculate the X and Y coordinates based on the current index
     const X = index % 3 + 1;
     const Y = Math.floor(index / 3) + 1;
     return { X, Y };
@@ -56,7 +54,7 @@ class AppClass extends React.Component {
   move(direction) {
     const nextIndex = this.getNextIndex(direction);
     if (nextIndex === this.state.index) {
-      this.setState({ message: `You can't go ${direction}` });
+      this.setState({ message: `Ouch: You can't go ${direction}` });
     } else {
       this.setState((prevState) => ({
         index: nextIndex,
@@ -73,42 +71,34 @@ class AppClass extends React.Component {
     const { email } = this.state;
 
     if (!email) {
-      this.setState({ message: 'Email is required' });
+      this.setState({ message: 'Ouch: Email is required' });
       return;
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      this.setState({ message: 'Ouch: email must be a valid email' });
+      this.setState({ message: 'Ouch: Email must be a valid email' });
       return;
     }
 
     if (email === 'foo@bar.baz') {
-      this.setState({ message: 'foo@bar.baz' });
+      this.setState({ message: `${email} failure #71` });
     } else {
-      // Make a POST request to the server
-      fetch('http://localhost:9000/api/result', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }), // Send email in JSON format
-      })
-        .then((response) => {
-          if (response.ok) {
-            return response.json(); // You can parse the response if it's in JSON format
-          } else {
-            throw new Error('Network response was not ok');
-          }
+      axios
+        .post('http://localhost:9000/api/result', {
+          email: email,
+          x: this.state.XY.X,
+          y: this.state.XY.Y,
+          steps: this.state.steps,
         })
-        .then((data) => {
-          // Handle a successful response
-          this.setState({ message: 'Data sent successfully', email: '' });
+        .then((res) => {
+          this.setState({ message: `${email} win #${res.data.win}` });
         })
         .catch((error) => {
-          // Handle errors
-          this.setState({ message: `Error: ${error.message}` });
+          this.setState({ message: 'An error occurred while sending the data to the server.' });
         });
     }
+
+    this.setState({ email: '' });
   }
 
   render() {
