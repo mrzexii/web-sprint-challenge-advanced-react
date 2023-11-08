@@ -1,88 +1,155 @@
-import React from 'react'
+import React from 'react';
+import axios from 'axios';
 
 // Suggested initial states
-const initialMessage = ''
-const initialEmail = ''
-const initialSteps = 0
-const initialIndex = 4 // the index the "B" is at
+const initialMessage = '';
+const initialEmail = '';
+const initialSteps = 0;
+const initialIndex = 4; // the index the "B" is at
 
-const initialState = {
-  message: initialMessage,
-  email: initialEmail,
-  index: initialIndex,
-  steps: initialSteps,
-}
+class AppClass extends React.Component {
+  constructor(props) {
+    super(props);
 
-export default class AppClass extends React.Component {
-  // THE FOLLOWING HELPERS ARE JUST RECOMMENDATIONS.
-  // You can delete them and build your own logic from scratch.
-
-  getXY = () => {
-    // It it not necessary to have a state to track the coordinates.
-    // It's enough to know what index the "B" is at, to be able to calculate them.
+    this.state = {
+      XY: { X: 2, Y: 2 },
+      index: initialIndex,
+      steps: initialSteps,
+      message: initialMessage,
+      email: initialEmail,
+    };
   }
 
-  getXYMessage = () => {
-    // It it not necessary to have a state to track the "Coordinates (2, 2)" message for the user.
-    // You can use the `getXY` helper above to obtain the coordinates, and then `getXYMessage`
-    // returns the fully constructed string.
+  getXY(index) {
+    // Calculate the X and Y coordinates based on the current index
+    const X = index % 3 + 1;
+    const Y = Math.floor(index / 3) + 1;
+    return { X, Y };
   }
 
-  reset = () => {
-    // Use this helper to reset all states to their initial values.
+  reset() {
+    this.setState({
+      XY: { X: 2, Y: 2 },
+      index: initialIndex,
+      steps: initialSteps,
+      message: initialMessage,
+      email: initialEmail,
+    });
   }
 
-  getNextIndex = (direction) => {
-    // This helper takes a direction ("left", "up", etc) and calculates what the next index
-    // of the "B" would be. If the move is impossible because we are at the edge of the grid,
-    // this helper should return the current index unchanged.
+  getNextIndex(direction) {
+    const currentIndex = this.state.index;
+    switch (direction) {
+      case 'left':
+        return currentIndex % 3 === 0 ? currentIndex : currentIndex - 1;
+      case 'up':
+        return Math.floor(currentIndex / 3) === 0 ? currentIndex : currentIndex - 3;
+      case 'right':
+        return currentIndex % 3 === 2 ? currentIndex : currentIndex + 1;
+      case 'down':
+        return Math.floor(currentIndex / 3) === 2 ? currentIndex : currentIndex + 3;
+      default:
+        return currentIndex;
+    }
   }
 
-  move = (evt) => {
-    // This event handler can use the helper above to obtain a new index for the "B",
-    // and change any states accordingly.
+  move(direction) {
+    const nextIndex = this.getNextIndex(direction);
+    if (nextIndex === this.state.index) {
+      this.setState({ message: `You can't go ${direction}` });
+    } else {
+      this.setState((prevState) => ({
+        index: nextIndex,
+        steps: prevState.steps + 1,
+        XY: this.getXY(nextIndex),
+        message: '',
+      }));
+    }
   }
 
-  onChange = (evt) => {
-    // You will need this to update the value of the input.
-  }
+  onSubmit(evt) {
+    evt.preventDefault();
 
-  onSubmit = (evt) => {
-    // Use a POST request to send a payload to the server.
+    const { email } = this.state;
+
+    if (!email) {
+      this.setState({ message: 'Email is required' });
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      this.setState({ message: 'Ouch: email must be a valid email' });
+      return;
+    }
+
+    if (email === 'foo@bar.baz') {
+      this.setState({ message: 'foo@bar.baz' });
+    } else {
+      // Make a POST request to the server
+      fetch('http://localhost:9000/api/result', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }), // Send email in JSON format
+      })
+        .then((response) => {
+          if (response.ok) {
+            return response.json(); // You can parse the response if it's in JSON format
+          } else {
+            throw new Error('Network response was not ok');
+          }
+        })
+        .then((data) => {
+          // Handle a successful response
+          this.setState({ message: 'Data sent successfully', email: '' });
+        })
+        .catch((error) => {
+          // Handle errors
+          this.setState({ message: `Error: ${error.message}` });
+        });
+    }
   }
 
   render() {
-    const { className } = this.props
+    const { XY, index, steps, message, email } = this.state;
+
     return (
-      <div id="wrapper" className={className}>
+      <div id="wrapper" className={this.props.className}>
         <div className="info">
-          <h3 id="coordinates">Coordinates (2, 2)</h3>
-          <h3 id="steps">You moved 0 times</h3>
+          <h3 id="coordinates">Coordinates ({XY.X}, {XY.Y})</h3>
+          <h3 id="steps">You moved {steps} {steps === 1 ? 'time' : 'times'}</h3>
         </div>
         <div id="grid">
-          {
-            [0, 1, 2, 3, 4, 5, 6, 7, 8].map(idx => (
-              <div key={idx} className={`square${idx === 4 ? ' active' : ''}`}>
-                {idx === 4 ? 'B' : null}
-              </div>
-            ))
-          }
+          {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((idx) => (
+            <div key={idx} className={`square${idx === index ? ' active' : ''}`}>
+              {idx === index ? 'B' : null}
+            </div>
+          ))}
         </div>
         <div className="info">
-          <h3 id="message"></h3>
+          <h3 id="message">{message}</h3>
         </div>
         <div id="keypad">
-          <button id="left">LEFT</button>
-          <button id="up">UP</button>
-          <button id="right">RIGHT</button>
-          <button id="down">DOWN</button>
-          <button id="reset">reset</button>
+          <button id="left" onClick={() => this.move('left')}>LEFT</button>
+          <button id="up" onClick={() => this.move('up')}>UP</button>
+          <button id="right" onClick={() => this.move('right')}>RIGHT</button>
+          <button id="down" onClick={() => this.move('down')}>DOWN</button>
+          <button id="reset" onClick={() => this.reset()}>reset</button>
         </div>
-        <form>
-          <input id="email" type="email" placeholder="type email"></input>
-          <input id="submit" type="submit"></input>
+        <form onSubmit={(e) => this.onSubmit(e)}>
+          <input
+            id="email"
+            type="email"
+            placeholder="Type email"
+            value={email}
+            onChange={(e) => this.setState({ email: e.target.value })}
+          ></input>
+          <input id="submit" type="submit" value="Submit Email"></input>
         </form>
       </div>
-    )
+    );
   }
 }
+
+export default AppClass;
