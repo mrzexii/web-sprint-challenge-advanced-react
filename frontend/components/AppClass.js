@@ -78,7 +78,7 @@ class AppClass extends React.Component {
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      this.setState({ message: 'Email must be a valid email address' });
+      this.setState({ message: 'Ouch: email must be a valid email' });
       return;
     }
 
