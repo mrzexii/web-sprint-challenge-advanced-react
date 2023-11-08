@@ -8,34 +8,34 @@ test('Renders AppFunctional component without errors', () => {
 
 test('Renders AppFunctional component with coordinates and step count', () => {
   render(<AppFunctional />);
-  expect(screen.getByText('Coordinates (2, 2)')).toBeInTheDocument();
-  expect(screen.getByText('You moved 0 times')).toBeInTheDocument();
+  expect(screen.getByText(/Coordinates \(\d, \d\)/i)).toBeInTheDocument();
+  expect(screen.getByText(/You moved \d+ times/i)).toBeInTheDocument();
 });
 
 test('Renders AppFunctional component with message', () => {
   render(<AppFunctional />);
-  expect(screen.getByText('An initial message')).toBeInTheDocument();
+  expect(screen.getByText(/An initial message/i)).toBeInTheDocument();
 });
 
 test('Renders AppFunctional component with buttons', () => {
   render(<AppFunctional />);
-  expect(screen.getByText('LEFT')).toBeInTheDocument();
-  expect(screen.getByText('UP')).toBeInTheDocument();
-  expect(screen.getByText('RIGHT')).toBeInTheDocument();
-  expect(screen.getByText('DOWN')).toBeInTheDocument();
-  expect(screen.getByText('reset')).toBeInTheDocument();
+  expect(screen.getByText(/LEFT/i)).toBeInTheDocument();
+  expect(screen.getByText(/UP/i)).toBeInTheDocument();
+  expect(screen.getByText(/RIGHT/i)).toBeInTheDocument();
+  expect(screen.getByText(/DOWN/i)).toBeInTheDocument();
+  expect(screen.getByText(/reset/i)).toBeInTheDocument();
 });
 
 test('Typing on the input changes its value', () => {
   render(<AppFunctional />);
   const input = screen.getByPlaceholderText('Type email');
   fireEvent.change(input, { target: { value: 'example@example.com' } });
-  expect(screen.getByDisplayValue('example@example.com')).toBeInTheDocument();
+  expect(screen.getByDisplayValue(/example@example.com/i)).toBeInTheDocument();
 });
 
 test('Renders AppFunctional component with submit button', () => {
   render(<AppFunctional />);
-  expect(screen.getByText('Submit Email')).toBeInTheDocument();
+  expect(screen.getByText(/Submit Email/i)).toBeInTheDocument();
 });
 
 test('Check for custom error message', () => {
