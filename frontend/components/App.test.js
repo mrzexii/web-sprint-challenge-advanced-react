@@ -37,3 +37,17 @@ test('Renders AppFunctional component with submit button', () => {
   render(<AppFunctional />);
   expect(screen.getByText('Submit Email')).toBeInTheDocument();
 });
+
+
+test('Check for custom error message', () => {
+  render(<AppFunctional />);
+  
+  // Write a custom matcher function
+  const customMatcher = (content, element) => {
+    return element.textContent.includes(content);
+  };
+  
+  // Use the custom matcher to find the error message
+  const errorMessage = 'Ouch: email must be a valid email';
+  expect(screen.getByText((content, element) => customMatcher(errorMessage, element))).toBeInTheDocument();
+});
