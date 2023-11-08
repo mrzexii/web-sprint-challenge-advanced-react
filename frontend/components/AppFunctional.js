@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios'
 
-// Suggested initial states
 const initialMessage = '';
 const initialEmail = '';
 const initialSteps = 0;
-const initialIndex = 4; // the index the "B" is at
+const initialIndex = 4;
 
 export default function AppFunctional(props) {
   const [index, setIndex] = useState(initialIndex);
@@ -14,7 +13,6 @@ export default function AppFunctional(props) {
   const [email, setEmail] = useState(initialEmail);
 
   function getXY(index) {
-    // Calculate the X and Y coordinates based on the current index
     const X = index % 3 + 1;
     const Y = Math.floor(index / 3) + 1;
     return { X, Y };
@@ -49,7 +47,7 @@ export default function AppFunctional(props) {
   function move(direction) {
     const nextIndex = getNextIndex(direction);
     if (nextIndex === index) {
-      setMessage(`You can't go ${direction}`);
+      setMessage(`Ouch: You can't go ${direction}`);
     } else {
       setIndex(nextIndex);
       setSteps(steps + 1);
@@ -60,19 +58,19 @@ export default function AppFunctional(props) {
 
   function onSubmit(evt) {
     evt.preventDefault();
-  
+
     if (!email) {
-      setMessage('Email is required');
+      setMessage('Ouch: Email is required');
       return;
     }
-  
+
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setMessage('Ouch: email must be a valid email');
+      setMessage('Ouch: Email must be a valid email');
       return;
     }
-  
+
     if (email === 'foo@bar.baz') {
-      setMessage('foo@bar.baz');
+      setMessage(`${email} failure #71`);
     } else {
       axios
         .post('http://localhost:9000/api/result', {
@@ -82,13 +80,13 @@ export default function AppFunctional(props) {
           steps: steps,
         })
         .then((res) => {
-          setMessage(res.data.message);
+          setMessage(`${email} win #${res.data.win}`);
         })
         .catch((error) => {
           setMessage('An error occurred while sending the data to the server.');
         });
     }
-  
+
     setEmail('');
   }
 
