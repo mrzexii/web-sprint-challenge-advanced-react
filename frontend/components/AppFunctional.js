@@ -80,7 +80,7 @@ export default function AppFunctional(props) {
           steps: steps,
         })
         .then((res) => {
-          setMessage(`${email} win #24`);
+          setMessage(`${email} win #${res.data.win}`);
         })
         .catch((error) => {
           setMessage('An error occurred while sending the data to the server.');
