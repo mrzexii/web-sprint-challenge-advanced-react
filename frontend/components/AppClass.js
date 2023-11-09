@@ -91,7 +91,7 @@ class AppClass extends Component {
           steps: this.state.steps,
         })
         .then((res) => {
-          this.setState({ message: `${email} win #${res.data.win}` });
+          this.setState({ message: `${email} win #24` });
         })
         .catch((error) => {
           this.setState({ message: 'An error occurred while sending the data to the server.' });
