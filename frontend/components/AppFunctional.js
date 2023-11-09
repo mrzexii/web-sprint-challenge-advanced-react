@@ -1,76 +1,118 @@
+
 import React, { useState } from 'react';
-import axios from 'axios'
-
-const initialMessage = '';
-const initialEmail = '';
-const initialSteps = 0;
-const initialIndex = 4;
-
+import axios from 'axios';
 export default function AppFunctional(props) {
-  const [index, setIndex] = useState(initialIndex);
-  const [steps, setSteps] = useState(initialSteps);
-  const [message, setMessage] = useState(initialMessage);
-  const [email, setEmail] = useState(initialEmail);
-
-  function getXY(index) {
-    const X = index % 3 + 1;
-    const Y = Math.floor(index / 3) + 1;
-    return { X, Y };
+  const [XY, setXY] = useState({ X: 2, Y: 2 });
+  const [index, setIndex] = useState(4);
+  const [steps, setSteps] = useState(0);
+  const [message, setMessage] = useState('');
+  const [email, setEmail] = useState('');
+  function getXY(value) {
+    // Calculate the X and Y coordinates based on the current index
+    const x = value % 3 + 1;
+    const y = Math.floor(value / 3) + 1;
+    setXY({ X: x, Y: y });
   }
-
-  const [XY, setXY] = useState(getXY(initialIndex));
-
   function reset() {
-    setIndex(initialIndex);
-    setSteps(initialSteps);
-    setMessage(initialMessage);
-    setEmail(initialEmail);
-    setXY(getXY(initialIndex));
+    setXY({ X: 2, Y: 2 });
+    setIndex(4);
+    setSteps(0);
+    setMessage('');
+    setEmail('');
   }
-
   function getNextIndex(direction) {
-    const currentIndex = index;
     switch (direction) {
       case 'left':
-        return currentIndex % 3 === 0 ? currentIndex : currentIndex - 1;
-      case 'up':
-        return Math.floor(currentIndex / 3) === 0 ? currentIndex : currentIndex - 3;
+        if (index % 3 === 0) return index;
+        else {
+          const nextIndex = index - 1;
+          setIndex(nextIndex);
+          return nextIndex;
+        }
       case 'right':
-        return currentIndex % 3 === 2 ? currentIndex : currentIndex + 1;
+        if (index % 3 === 2) return index;
+        else {
+          const nextIndex = index + 1;
+          setIndex(nextIndex);
+          return nextIndex;
+        }
+      case 'up':
+        if (parseInt(index / 3) === 0) return index;
+        else {
+          const nextIndex = index - 3;
+          setIndex(nextIndex);
+          return nextIndex;
+        }
       case 'down':
-        return Math.floor(currentIndex / 3) === 2 ? currentIndex : currentIndex + 3;
+        if (parseInt(index / 3) === 2) return index;
+        else {
+          const nextIndex = index + 3;
+          setIndex(nextIndex);
+          return nextIndex;
+        }
       default:
-        return currentIndex;
+        break;
     }
   }
-
-  function move(direction) {
-    const nextIndex = getNextIndex(direction);
-    if (nextIndex === index) {
-      setMessage(`Ouch: You can't go ${direction}`);
-    } else {
-      setIndex(nextIndex);
-      setSteps(steps + 1);
-      setXY(getXY(nextIndex));
-      setMessage('');
+  function move(evt) {
+    setMessage('');
+    let nextValue;
+    switch (evt) {
+      case 'left':
+        nextValue = getNextIndex('left');
+        if (index === nextValue) setMessage("You can't go left");
+        else {
+          setIndex(nextValue);
+          getXY(nextValue);
+          setSteps(steps + 1);
+        }
+        break;
+      case 'right':
+        nextValue = getNextIndex('right');
+        if (index === nextValue) setMessage("You can't go right");
+        else {
+          setIndex(nextValue);
+          getXY(nextValue);
+          setSteps(steps + 1);
+        }
+        break;
+      case 'up':
+        nextValue = getNextIndex('up');
+        if (index === nextValue) setMessage("You can't go up");
+        else {
+          setIndex(nextValue);
+          getXY(nextValue);
+          setSteps(steps + 1);
+        }
+        break;
+      case 'down':
+        nextValue = getNextIndex('down');
+        if (index === nextValue) setMessage("You can't go down");
+        else {
+          setIndex(nextValue);
+          getXY(nextValue);
+          setSteps(steps + 1);
+        }
+        break;
+      default:
+        break;
     }
   }
-
   function onSubmit(evt) {
     evt.preventDefault();
   
     if (!email) {
-      setMessage('Ouch: Email is required');
+      setMessage('Ouch: email is required');
       return;
     }
   
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setMessage('Ouch: Email must be a valid email');
+      setMessage('Ouch: email must be a valid email');
       return;
     }
   
     if (email === 'foo@bar.baz') {
-      setMessage(`${email} failure #71`);
+      setMessage('foo@bar.baz');
     } else {
       axios
         .post('http://localhost:9000/api/result', {
@@ -80,7 +122,7 @@ export default function AppFunctional(props) {
           steps: steps,
         })
         .then((res) => {
-          setMessage(`${email} win #${res.data.win}`);
+          setMessage(res.data.message);
         })
         .catch((error) => {
           setMessage('An error occurred while sending the data to the server.');
@@ -89,7 +131,7 @@ export default function AppFunctional(props) {
   
     setEmail('');
   }
-
+  
   return (
     <div id="wrapper" className={props.className}>
       <div className="info">
@@ -113,16 +155,11 @@ export default function AppFunctional(props) {
         <button id="down" onClick={() => move('down')}>DOWN</button>
         <button id="reset" onClick={() => reset()}>reset</button>
       </div>
-      <form onSubmit={(e) => onSubmit(e)}>
-        <input
-          id="email"
-          type="email"
-          placeholder="Type email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        ></input>
-        <input id="submit" type="submit" value="Submit Email"></input>
-      </form>
+     <form onSubmit={(e) => onSubmit(e)}>
+  <label htmlFor="email">Type email</label>
+  <input id="email" name="Type email" type="email" placeholder="Type email" value={email} onChange={(e) => setEmail(e.target.value)} />
+  <input id="submit" type="submit" value="Submit Email" />
+</form>
     </div>
   );
 }
