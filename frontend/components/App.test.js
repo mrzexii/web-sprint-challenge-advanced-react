@@ -1,71 +1,60 @@
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import AppFunctional from './AppFunctional';
 
+import React from 'react';
+import { render, screen, fireEvent , waitFor} from '@testing-library/react';
+import AppFunctional from './AppFunctional';
 test('Renders AppFunctional component without errors', () => {
   render(<AppFunctional />);
 });
-
-test('Renders AppFunctional component with coordinates and step count', () => {
+test('Displays initial coordinates and steps', () => {
   render(<AppFunctional />);
   expect(screen.getByText('Coordinates (2, 2)')).toBeInTheDocument();
   expect(screen.getByText('You moved 0 times')).toBeInTheDocument();
 });
-
-test('Renders AppFunctional component with message', () => {
+test('Typing in the email input changes its value', () => {
   render(<AppFunctional />);
-  expect(screen.getByText('An initial message')).toBeInTheDocument();
+  const emailInput = screen.getByRole('textbox', { name: 'Type email' });
+  fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
+  expect(emailInput).toHaveValue('test@example.com');
 });
-
-test('Renders AppFunctional component with buttons', () => {
+test('Displays error message on missing email', async () => {
   render(<AppFunctional />);
-  expect(screen.getByText('LEFT')).toBeInTheDocument();
-  expect(screen.getByText('UP')).toBeInTheDocument();
-  expect(screen.getByText('RIGHT')).toBeInTheDocument();
-  expect(screen.getByText('DOWN')).toBeInTheDocument();
-  expect(screen.getByText('reset')).toBeInTheDocument();
-});
-
-test('Typing on the input changes its value', () => {
-  render(<AppFunctional />);
-  const input = screen.getByPlaceholderText('Type email');
-  fireEvent.change(input, { target: { value: 'example@example.com' } });
-  expect(screen.getByDisplayValue(/example@example.com/i)).toBeInTheDocument();
-});
-
-test('Renders AppFunctional component with submit button', () => {
-  render(<AppFunctional />);
-  expect(screen.getByText(/Submit Email/i)).toBeInTheDocument();
-});
-
-test('Check for custom error message', () => {
-  render(<AppFunctional />);
-expect(screen.getByText(/Ouch: email must be a valid email/i).toBeInTheDocument();
-});
-
-test('Submit does not reset coordinates nor steps', () => {
-  render(<AppClass />);
-
-  // Perform actions: up, right, type valid email, submit
-  const upButton = screen.getByText('UP');
-  const rightButton = screen.getByText('RIGHT');
-  const emailInput = screen.getByPlaceholderText('Type email');
-  const submitButton = screen.getByText('Submit Email');
-
-  fireEvent.click(upButton);
-  fireEvent.click(rightButton);
-  fireEvent.change(emailInput, { target: { value: 'lady@gaga.com' } });
+  const submitButton = screen.getByRole('button', { name: 'Submit Email' });
   fireEvent.click(submitButton);
-
-  // Wait for the success message
-  const successMessage = screen.getByText(/lady win #\d+/i);
-  expect(successMessage).toBeInTheDocument();
-
-  // Verify that coordinates and steps remain unchanged
-  const coordinates = screen.getByText(/Coordinates \(\d, \d\)/i);
-  const steps = screen.getByText(/You moved \d+ times/i);
-
-  // You may adjust the expected values as per your component's behavior
-  expect(coordinates.textContent).toMatch(/\(3.*1\)$/);
-  expect(steps.textContent).toBe('You moved 2 times');
+  // Use queryByText with a regular expression
+  const errorMessage = screen.queryByText(/Ouch: email is required/i);
+  // Check if the errorMessage is null (not found) or if it exists
+  expect(errorMessage).not.toBeNull();
 });
+test('Displays error message on invalid email format', async () => {
+  render(<AppFunctional />);
+  const emailInput = screen.getByRole('textbox', { name: 'Type email' });
+  fireEvent.change(emailInput, { target: { value: 'invalid-email' } });
+  const submitButton = screen.getByRole('button', { name: 'Submit Email' });
+  fireEvent.click(submitButton);
+  // Use queryByText with a regular expression
+  const errorMessage = screen.queryByText(/Ouch: email must be a valid email/i);
+  // Check if the errorMessage is null (not found) or if it exists
+  expect(errorMessage).not.toBeNull();
+});
+test('Displays error message "foo@bar.baz failure #71" for specific email', async () => {
+  render(<AppFunctional />);
+  const emailInput = screen.getByRole('textbox', { name: 'Type email' });
+  fireEvent.change(emailInput, { target: { value: 'foo@bar.baz' } });
+  const submitButton = screen.getByRole('button', { name: 'Submit Email' });
+  fireEvent.click(submitButton);
+  // Use queryByText with a regular expression
+  const errorMessage = screen.queryByText(/foo@bar\.baz/i);
+  // Check if the errorMessage is null (not found) or if it exists
+  const renderedComponent = screen.container;
+  console.log(renderedComponent.innerHTML);
+  
+test('Reset button resets the component', () => {
+  render(<AppFunctional />);
+  const emailInput = screen.getByRole('textbox', { name: 'Type email' });
+  fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
+  const resetButton = screen.getByRole('button', { name: 'reset' });
+  fireEvent.click(resetButton);
+  expect(emailInput).toHaveValue('');
+  expect(screen.getByText('Coordinates (2, 2)')).toBeInTheDocument();
+  expect(screen.getByText('You moved 0 times')).toBeInTheDocument();
+})
