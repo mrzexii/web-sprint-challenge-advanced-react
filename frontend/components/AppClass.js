@@ -1,114 +1,155 @@
-import React, { Component } from 'react';
-import axios from 'axios';
 
-const initialMessage = '';
-const initialEmail = '';
-const initialSteps = 0;
-const initialIndex = 4;
-
-class AppClass extends Component {
+import React from 'react'
+import axios from 'axios'
+export default class AppClass extends React.Component {
+  // THE FOLLOWING HELPERS ARE JUST RECOMMENDATIONS.
+  // You can delete them and build your own logic from scratch.
   constructor(props) {
     super(props);
-
     this.state = {
       XY: { X: 2, Y: 2 },
-      index: initialIndex,
-      steps: initialSteps,
-      message: initialMessage,
-      email: initialEmail,
+      index: 4,
+      steps: 0,
+      message: '',
+      email: '',
     };
   }
-
-  getXY(index) {
-    const X = index % 3 + 1;
-    const Y = Math.floor(index / 3) + 1;
-    return { X, Y };
+  getXY = (value) => {
+    const X = value % 3 + 1;
+    const Y = parseInt(value / 3) + 1;
+    this.setState({ XY: { X, Y } });
   }
-
-  reset() {
+  
+  reset = () => {
+    // Use this helper to reset all states to their initial values.
     this.setState({
       XY: { X: 2, Y: 2 },
-      index: initialIndex,
-      steps: initialSteps,
-      message: initialMessage,
-      email: initialEmail,
+      index: 4,
+      steps: 0,
+      message: '',
+      email: '',
     });
   }
-
-  getNextIndex(direction) {
-    const currentIndex = this.state.index;
+  getNextIndex = (direction) => {
+    // This helper takes a direction ("left", "up", etc) and calculates what the next index
+    // of the "B" would be. If the move is impossible because we are at the edge of the grid,
+    // this helper should return the current index unchanged.
+    const { index } = this.state;
     switch (direction) {
       case 'left':
-        return currentIndex % 3 === 0 ? currentIndex : currentIndex - 1;
-      case 'up':
-        return Math.floor(currentIndex / 3) === 0 ? currentIndex : currentIndex - 3;
+        if (index % 3 === 0) return index;
+        else {
+          const nextIndex = index - 1;
+          this.setState({ index: nextIndex });
+          return nextIndex;
+        }
       case 'right':
-        return currentIndex % 3 === 2 ? currentIndex : currentIndex + 1;
+        if (index % 3 === 2) return index;
+        else {
+          const nextIndex = index + 1;
+          this.setState({ index: nextIndex });
+          return nextIndex;
+        }
+      case 'up':
+        if (parseInt(index / 3) === 0) return index;
+        else {
+          const nextIndex = index - 3;
+          this.setState({ index: nextIndex });
+          return nextIndex;
+        }
       case 'down':
-        return Math.floor(currentIndex / 3) === 2 ? currentIndex : currentIndex + 3;
+        if (parseInt(index / 3) === 2) return index;
+        else {
+          const nextIndex = index + 3;
+          this.setState({ index: nextIndex });
+          return nextIndex;
+        }
       default:
-        return currentIndex;
+        break;
     }
   }
-
-  move(direction) {
-    const nextIndex = this.getNextIndex(direction);
-    if (nextIndex === this.state.index) {
-      this.setState({ message: `Ouch: You can't go ${direction}` });
-    } else {
-      this.setState((prevState) => ({
-        index: nextIndex,
-        steps: prevState.steps + 1,
-        XY: this.getXY(nextIndex),
-        message: '',
-      }));
+  move = (evt) => {
+    // This event handler can use the helper above to obtain a new index for the "B",
+    // and change any states accordingly.
+    const { index, steps } = this.state;
+    this.setState({ message: '' })
+    let nextValue;
+    switch (evt) {
+      case 'left':
+        nextValue = this.getNextIndex('left');
+        if (index === nextValue) this.setState({ message: "You can't go left" });
+        else {
+          this.setState((prevState) => ({
+            index: nextValue,
+            steps: prevState.steps + 1,
+          }));
+          this.getXY(nextValue);
+        }
+        break;
+      case 'right':
+        nextValue = this.getNextIndex('right');
+        if (index === nextValue) this.setState({ message: "You can't go right" });
+        else {
+          this.setState((prevState) => ({
+            index: nextValue,
+            steps: prevState.steps + 1,
+          }));
+          this.getXY(nextValue);
+        }
+        break;
+      case 'up':
+        nextValue = this.getNextIndex('up');
+        if (index === nextValue) this.setState({ message: "You can't go up" });
+        else {
+          this.setState((prevState) => ({
+            index: nextValue,
+            steps: prevState.steps + 1,
+          }));
+          this.getXY(nextValue);
+        }
+        break;
+      case 'down':
+        nextValue = this.getNextIndex('down');
+        if (index === nextValue) this.setState({ message: "You can't go down" });
+        else {
+          this.setState((prevState) => ({
+            index: nextValue,
+            steps: prevState.steps + 1,
+          }));
+          this.getXY(nextValue);
+        }
+        break;
+      default:
+        break;
     }
   }
-
-  onSubmit(evt) {
+  onSubmit = (evt) => {
     evt.preventDefault();
-
-    const { email } = this.state;
-
-    if (!email) {
-      this.setState({ message: 'Ouch: Email is required' });
-      return;
-    }
-
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      this.setState({ message: 'Ouch: Email must be a valid email' });
-      return;
-    }
-
-    if (email === 'foo@bar.baz') {
-      this.setState({ message: `${email} failure #71` });
-    } else {
-      axios
-        .post('http://localhost:9000/api/result', {
-          email: email,
-          x: this.state.XY.X,
-          y: this.state.XY.Y,
-          steps: this.state.steps,
-        })
-        .then((res) => {
-          this.setState({ message: `${email} win #24` });
-        })
-        .catch((error) => {
-          this.setState({ message: 'An error occurred while sending the data to the server.' });
-        });
-    }
-
+    const { XY, steps, email } = this.state;
+    axios
+      .post('http://localhost:9000/api/result', {
+        email,
+        x: XY.X,
+        y: XY.Y,
+        steps,
+      })
+      .then((res) => {
+        this.setState({ message: res.data.message });
+      })
+      .catch((error) => {
+        this.setState({ message: "An error occurred while sending the data to the server." });
+      });
     this.setState({ email: '' });
   }
-
+  
   render() {
+    const { className } = this.props
     const { XY, index, steps, message, email } = this.state;
-
     return (
-      <div id="wrapper" className={this.props.className}>
+      <div id="wrapper" className={className}>
         <div className="info">
           <h3 id="coordinates">Coordinates ({XY.X}, {XY.Y})</h3>
-          <h3 id="steps">You moved {steps} {steps === 1 ? 'time' : 'times'}</h3>
+          <h3 id="steps">You moved {steps} {this.state.steps === 1 ? 'time' : 'times'}</h3>
         </div>
         <div id="grid">
           {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((idx) => (
@@ -128,18 +169,10 @@ class AppClass extends Component {
           <button id="reset" onClick={() => this.reset()}>reset</button>
         </div>
         <form onSubmit={(e) => this.onSubmit(e)}>
-          <input
-            id="email"
-            type="email"
-            placeholder="Type email"
-            value={email}
-            onChange={(e) => this.setState({ email: e.target.value })}
-          ></input>
-          <input id="submit" type="submit" value="Submit Email"></input>
+          <input id="email" type="email" value={this.state.email} placeholder="type email" onChange={(e) => this.setState({ email: e.target.value })}></input>
+          <input id="submit" type="submit"></input>
         </form>
       </div>
-    );
+    )
   }
 }
-
-export default AppClass;
