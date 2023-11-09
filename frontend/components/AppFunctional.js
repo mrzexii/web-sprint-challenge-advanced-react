@@ -111,24 +111,21 @@ export default function AppFunctional(props) {
       return;
     }
   
-    if (email === 'foo@bar.baz') {
-      setMessage('foo@bar.baz');
-    } else {
-      axios
-        .post('http://localhost:9000/api/result', {
-          email: email,
-          x: XY.X,
-          y: XY.Y,
-          steps: steps,
-        })
-        .then((res) => {
-          setMessage(res.data.message);
-        })
-        .catch((error) => {
-          setMessage('An error occurred while sending the data to the server.');
-        });
-    }
-  
+    axios
+      .post('http://localhost:9000/api/result', {
+        email: email,
+        x: XY.X,
+        y: XY.Y,
+        steps: steps,
+      })
+      .then((res) => {
+        setMessage(res.data.message);
+      })
+      .catch((res, error) => {
+        console.log(res);
+        setMessage(res.response.data.message);
+      });
+
     setEmail('');
   }
   
